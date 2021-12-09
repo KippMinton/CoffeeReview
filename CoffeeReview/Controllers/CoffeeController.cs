@@ -45,5 +45,26 @@ namespace CoffeeShop.Controllers
             _coffeeRepository.Add(coffee);
             return CreatedAtAction("Get", new { id = coffee.Id }, coffee);
         }
+
+        //https://localhost:5001/api/coffee/1
+        [HttpPut("{id}")]
+        public IActionResult Put(int id, Coffee coffee)
+        {
+            if (id != coffee.Id)
+            {
+                return BadRequest();
+            }
+
+            _coffeeRepository.Update(coffee);
+            return NoContent();
+        }
+
+        //https://localhost:5001/api/coffee/1
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            _coffeeRepository.Delete(id);
+            return NoContent();
+        }
     }
 }
