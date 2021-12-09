@@ -28,7 +28,9 @@ namespace CoffeeShop.Repositories
                 conn.Open();
                 using (var cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = @"SELECT c.Id, c.Title, c.BeanVarietyId, b.Id as BeanId, b.[Name], b.Region, b.Notes
+                    cmd.CommandText = @"
+                                    SELECT c.Id, c.Title, c.BeanVarietyId, b.Id as BeanId,
+                                           b.[Name], b.Region, b.Notes
                                     FROM Coffee c
                                     JOIN BeanVariety b on c.BeanVarietyId = b.Id";
 
@@ -60,6 +62,51 @@ namespace CoffeeShop.Repositories
                         }
 
                         return coffees;
+                    }
+                }
+            }
+        }
+
+        public Coffee Get(int id)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                                    SELECT c.Id, c.Title, c.BeanVarietyId, b.Id as BeanId,
+                                           b.[Name], b.Region, b.Notes
+                                    FROM Coffee c
+                                    JOIN BeanVariety b on c.BeanVarietyId = b.Id
+                                    WHERE c.Id = @id";
+                    cmd.Parameters.AddWithValue("@id", id);
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        Coffee coffee = null;
+                        if (reader.Read())
+                        {
+                            coffee = new Coffee()
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                                Title = reader.GetString(reader.GetOrdinal("Title")),
+                                BeanVarietyId = reader.GetInt32(reader.GetOrdinal("BeanVarietyId")),
+
+                                BeanVariety = new BeanVariety()
+                                {
+                                    Id = reader.GetInt32(reader.GetOrdinal("BeanId")),
+                                    Name = reader.GetString(reader.GetOrdinal("Name")),
+                                    Region = reader.GetString(reader.GetOrdinal("Region"))
+                                }
+                            };
+                            if (!reader.IsDBNull(reader.GetOrdinal("Notes")))
+                            {
+                                coffee.BeanVariety.Notes = reader.GetString(reader.GetOrdinal("Notes"));
+                            }
+                        }
+
+                        return coffee;
                     }
                 }
             }

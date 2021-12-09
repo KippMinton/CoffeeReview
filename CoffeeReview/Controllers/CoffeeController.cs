@@ -25,5 +25,17 @@ namespace CoffeeShop.Controllers
         {
             return Ok(_coffeeRepository.GetAll());
         }
+
+        //https://localhost:5001/api/coffee/1
+        [HttpGet("{id}")]
+        public IActionResult Get(int id)
+        {
+            var coffee = _coffeeRepository.Get(id);
+            if (coffee == null)
+            {
+                return NotFound();
+            }
+            return Ok(coffee);
+        }
     }
 }

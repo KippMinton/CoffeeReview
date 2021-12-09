@@ -6,5 +6,6 @@ namespace CoffeeShop.Repositories
     public interface ICoffeeRepository
     {
         List<Coffee> GetAll();
+        Coffee Get(int id);
     }
 }
