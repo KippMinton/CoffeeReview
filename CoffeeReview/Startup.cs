@@ -34,6 +34,7 @@ namespace CoffeeReview
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "CoffeeReview", Version = "v1" });
             });
             services.AddTransient<IBeanVarietyRepository, BeanVarietyRepository>();
+            services.AddTransient<ICoffeeRepository, CoffeeRepository>();
 
         }
 
